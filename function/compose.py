@@ -12,7 +12,6 @@ class compose:
     def __init__(self,GUI):
         self.path = GUI.dataload.path
         self.data = GUI.dataload.chap_tray
-        print(self.data)
         
         self.GUI = GUI
         self.GUI.preview.clicked.connect(self.make)
@@ -64,7 +63,6 @@ class compose:
 
     def preview_html(self):
         print("COMPOSE id:", id(self.data))
-        print(self.data)
         html = """
         <html>
         <body style="

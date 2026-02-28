@@ -191,7 +191,6 @@ class data_handle:
             except Exception as e:
                 print(e)
             self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"] = self.ques_choose
-            print(self.chap_tray)
             print(self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"])
             print("DATA id:", id(self.chap_tray))
         if item.column() == 4:
