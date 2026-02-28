@@ -40,21 +40,24 @@ class compose:
         TL = []
         TN = []
         for key,chap in self.data.items():
-            print(chap)
-            if chap["ques_choose"] == None:
-                continue
-            for i in chap["ques_choose"]["TL"]:
-                print(i)
-                TL.append({"chap":key, "Content": chap["chap_content"][i]["Content"], 
-                           "Question": chap["chap_content"][i]["Question"],
-                           
-                           "Link": chap["chap_content"][i]["Link"]}) 
-            for i in chap["ques_choose"]["TN"]:
-                print(i)
-                TN.append({"chap":key,"Content": chap["chap_content"][i]["Content"], 
-                           "Question": chap["chap_content"][i]["Question"],
-                           
-                           "Link": chap["chap_content"][i]["Link"]})
+            try:
+                print(chap)
+                if chap["ques_choose"] == None:
+                    continue
+                for i in chap["ques_choose"]["TL"]:
+                    print(i)
+                    TL.append({"chap":key, "Content": chap["chap_content"][i]["Content"], 
+                            "Question": chap["chap_content"][i]["Question"],
+                            
+                            "Link": chap["chap_content"][i]["Link"]}) 
+                for i in chap["ques_choose"]["TN"]:
+                    print(i)
+                    TN.append({"chap":key,"Content": chap["chap_content"][i]["Content"], 
+                            "Question": chap["chap_content"][i]["Question"],
+                            
+                            "Link": chap["chap_content"][i]["Link"]})
+            except Exception as e:
+                print("Error in compose.count():", e)
 
         return TN,TL
 
