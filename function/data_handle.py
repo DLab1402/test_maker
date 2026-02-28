@@ -10,12 +10,13 @@ from setting import SOURCE_TYPE, DRIVE_LINK, LOCAL_PATH, get_path
 
 class data_handle:
     path = None
-    chap_tray = {}
+    
     chap_sta = None
     chap_content = None
     ques_choose = {"TN":[], "TL":[]}
 
     def __init__(self,GUI):
+        self.chap_tray = {}
         self.GUI = GUI
         self.GUI.content_shower.setColumnCount(6)
         self.GUI.content_shower.setHorizontalHeaderLabels(["Question","Type","Level","Content","Link","Chose"])
@@ -53,28 +54,31 @@ class data_handle:
         subject_path = os.path.join(LOCAL_PATH, self.GUI.subject_list.currentText())
         chap_list  = [f for f in os.listdir(subject_path) if os.path.isdir(os.path.join(subject_path, f))]
         self.GUI.chap_list.addItems(chap_list)
-        self.chap_tray = {k: {"chap_content":None, "chap_sta":None, "ques_choose":None} for k in chap_list}
+        self.chap_tray.update({k: {"chap_content":None, "chap_sta":None, "ques_choose":None} for k in chap_list})
         self.GUI.chap_list.blockSignals(False)
 
     def chapter_load(self):
         if self.chap_tray[self.GUI.chap_list.currentText()]["chap_content"] is not None:
+            print(1111)
             self.chap_content = self.chap_tray[self.GUI.chap_list.currentText()]["chap_content"]
             self.chap_sta = self.chap_tray[self.GUI.chap_list.currentText()]["chap_sta"]
             self.ques_choose = self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"]
         else:
+            print(1112)
             df = pd.read_excel(os.path.join(LOCAL_PATH,self.GUI.subject_list.currentText(),self.GUI.chap_list.currentText(),"question.xlsx"))
             self.chap_content = df.to_dict(orient="records")
             self.chap_sta = self.chap_statictics(self.chap_content)
             self.chap_tray[self.GUI.chap_list.currentText()]["chap_content"] = self.chap_content
             self.chap_tray[self.GUI.chap_list.currentText()]["chap_sta"] = self.chap_sta
+            self.ques_choose = {"TN":[], "TL":[]}
             self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"] = self.ques_choose
         self.chapter_show()
         self.mode()
 
     def chapter_show(self):
-        self.GUI.content_shower.clearContents()
-        self.GUI.TN_table.clearContents()
-        self.GUI.TL_table.clearContents()
+        self.GUI.content_shower.clear()
+        self.GUI.TN_table.clear()
+        self.GUI.TL_table.clear()
         if self.chap_content:
             self.GUI.content_shower.setRowCount(len(self.chap_content))
             for row_idx, row_data in enumerate(self.chap_content):
@@ -167,25 +171,29 @@ class data_handle:
     def ques_state_take(self,item):
         # Take data of content_show
         print("Item changed")
+        print(f"Row: {item.row()}, Column: {item.column()}, Text: {item.text()}")
         if item.column() == 5:
             try:
                 if self.chap_content[item.row()]["Type"] == "TN":
-                    if item.row()  not in self.ques_choose["TN"]:
-                        if item.checkState() == Qt.CheckState.Checked:
-                            if item.row()  not in self.ques_choose["TN"]:
-                                self.ques_choose["TN"].append(item.row())
-                        else:
+                    if item.checkState() == Qt.CheckState.Checked:
+                        if item.row()  not in self.ques_choose["TN"]:
+                            self.ques_choose["TN"].append(item.row())
+                    else:
+                        if item.row()  in self.ques_choose["TN"]:
                             self.ques_choose["TN"].remove(item.row())
                 if self.chap_content[item.row()]["Type"] == "TL":
-                    if item.row()  not in self.ques_choose["TL"]:
-                        if item.checkState() == Qt.CheckState.Checked:
+                    if item.checkState() == Qt.CheckState.Checked:
+                        if item.row()  not in self.ques_choose["TL"]:
                             self.ques_choose["TL"].append(item.row())
-                        else:
+                    else:
+                        if item.row()  not in self.ques_choose["TL"]:
                             self.ques_choose["TL"].remove(item.row())
             except Exception as e:
                 print(e)
-            print(self.ques_choose)
             self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"] = self.ques_choose
+            print(self.chap_tray)
+            print(self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"])
+            print("DATA id:", id(self.chap_tray))
         if item.column() == 4:
             try:
                 path = os.path.join(self.path,self.GUI.subject_list.currentText(),
@@ -282,8 +290,8 @@ class data_handle:
         
         self.ques_choose["TN"] = TN_idx
         self.ques_choose["TL"] = TL_idx
-        print(self.ques_choose)
         self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"] = self.ques_choose
+        print(self.chap_tray[self.GUI.chap_list.currentText()]["ques_choose"])
 
         row_count = self.GUI.content_shower.rowCount()
 

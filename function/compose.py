@@ -9,9 +9,10 @@ from PyQt6.QtWidgets import QFileDialog
 from setting import SOURCE_TYPE, DRIVE_LINK, LOCAL_PATH, get_path
 
 class compose:
-    def __init__(self,GUI,dataload):
-        self.path = dataload.path
-        self.data = dataload.chap_tray
+    def __init__(self,GUI):
+        self.path = GUI.dataload.path
+        self.data = GUI.dataload.chap_tray
+        print(self.data)
         
         self.GUI = GUI
         self.GUI.preview.clicked.connect(self.make)
@@ -62,6 +63,8 @@ class compose:
         return TN,TL
 
     def preview_html(self):
+        print("COMPOSE id:", id(self.data))
+        print(self.data)
         html = """
         <html>
         <body style="

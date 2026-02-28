@@ -15,8 +15,8 @@ class main(QtWidgets.QMainWindow):
         uic.loadUi(GUI_PATH,self)
         self.dataload = data_handle(self)
         self.dataload.begin_load()
-        self.composer = compose(self,self.dataload)
         self.dataload.chapter_load()
+        self.composer = compose(self)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
